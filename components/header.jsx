@@ -1,14 +1,16 @@
-// FIXME: Need to solve the issue of the header buttons on the right
+// FIXME: Padding problem
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { LayoutDashboard, Link, PenBox } from "lucide-react";
+import { checkUser } from "@/lib/checkUser";
 
-const Header = () => {
+const Header = async () => {
+  await checkUser();
   return (
     <header className="fixed top-0 w-full bg-black text-white px-8 py-4 z-50 flex justify-between items-center">
       {/* Navigation Links */}
       <nav className="flex space-x-8 text-sm font-medium">
-        <a href="#" className="hover:text-gray-400">
+        <a href="http://localhost:3000/" className="hover:text-gray-400">
           Home
         </a>
         <a href="#" className="hover:text-gray-400">
