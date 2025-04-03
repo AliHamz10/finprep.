@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4">
               {/* Left Side: Text */}
               <div className="text-sm text-gray-400">
-                &copy; 2025 Ali Hamza —
+                &copy; 2025 Ali Hamza & Zarmeena Jawad—
                 <a href="#" className="text-white hover:underline mx-2">
                   Privacy Policy
                 </a>{" "}
