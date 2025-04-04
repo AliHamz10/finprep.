@@ -1,7 +1,15 @@
 import React from "react";
 
-const page = () => {
-  return <div>Dashboard</div>;
-};
+function DashboardPage() {
+  return (
+    <div className="px-5">
+      {/* Budget Progress */}
 
-export default page;
+      {/* Overview */}
+
+      {/* Accounts Grid */}
+    </div>
+  );
+}
+
+export default DashboardPage;
