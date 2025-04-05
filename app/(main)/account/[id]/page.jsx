@@ -1,44 +1,55 @@
 import { getAccountWithTransactions } from "@/actions/accounts";
 import { notFound } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
+import TransactionTable from "../_components/transaction-table";
+import { BarLoader } from "react-spinners";
 
 const AccountsPage = async ({ params }) => {
   const accountData = await getAccountWithTransactions(params.id);
-  if (!accountData) {
-    notFound();
-  }
+  if (!accountData) notFound();
 
   const { transactions, ...account } = accountData;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Account Header */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+      <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-2xl font-bold text-gray-800">{account.name}</h1>
-        <p className="text-gray-600">
-          {account.type.charAt(0) + account.type.slice(1).toLowerCase()} Account
-        </p>
+        <p className="text-gray-600 capitalize">{account.type} Account</p>
       </div>
 
       {/* Account Summary */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-green-100 text-green-800 p-4 rounded-lg shadow-md">
-          <div className="text-3xl font-semibold">
-            ${parseFloat(account.balance).toFixed(2)}
+      <div className="grid grid-cols-2 gap-6">
+        {[
+          {
+            label: "Current Balance",
+            value: `$${parseFloat(account.balance).toFixed(2)}`,
+            bgColor: "bg-green-100",
+            textColor: "text-green-800",
+          },
+          {
+            label: "Transactions",
+            value: account._count.transactions,
+            bgColor: "bg-blue-100",
+            textColor: "text-blue-800",
+          },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className={`${item.bgColor} ${item.textColor} p-4 rounded-lg shadow-md`}
+          >
+            <div className="text-3xl font-semibold">{item.value}</div>
+            <p className="text-sm">{item.label}</p>
           </div>
-          <p className="text-sm">Current Balance</p>
-        </div>
-        <div className="bg-blue-100 text-blue-800 p-4 rounded-lg shadow-md">
-          <div className="text-3xl font-semibold">
-            {account._count.transactions}
-          </div>
-          <p className="text-sm">Transactions</p>
-        </div>
+        ))}
       </div>
 
-      {/* Chart Section */}
-
       {/* Transaction Table */}
+      <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#4F46E5" />}
+      >
+        <TransactionTable transactions={transactions} />
+      </Suspense>
     </div>
   );
 };
