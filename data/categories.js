@@ -4,14 +4,14 @@ export const defaultCategories = [
     id: "salary",
     name: "Salary",
     type: "INCOME",
-    color: "#10b981", // emerald-500
+    color: "#22c55e", // green-500
     icon: "Wallet",
   },
   {
     id: "freelance",
     name: "Freelance",
     type: "INCOME",
-    color: "#0ea5e9", // sky-500
+    color: "#06b6d4", // cyan-500
     icon: "Laptop",
   },
   {
@@ -64,14 +64,14 @@ export const defaultCategories = [
     id: "groceries",
     name: "Groceries",
     type: "EXPENSE",
-    color: "#22c55e", // green-500
+    color: "#84cc16", // lime-500
     icon: "Shopping",
   },
   {
     id: "utilities",
     name: "Utilities",
     type: "EXPENSE",
-    color: "#0ea5e9", // sky-500
+    color: "#06b6d4", // cyan-500
     icon: "Zap",
     subcategories: ["Electricity", "Water", "Gas", "Internet", "Phone"],
   },
