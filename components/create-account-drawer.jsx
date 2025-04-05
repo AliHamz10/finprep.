@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -69,7 +69,11 @@ const CreateAccountDrawer = ({ children }) => {
   }, [error]);
 
   const onSumbit = async (data) => {
-    await createAccountFn(data);
+    const formattedData = {
+      ...data,
+      type: data.type.toUpperCase(), // Convert type to uppercase to match AccountType enum
+    };
+    await createAccountFn(formattedData);
   };
 
   return (
@@ -125,8 +129,6 @@ const CreateAccountDrawer = ({ children }) => {
                 <SelectContent className="bg-gray-800 border border-gray-700 text-white rounded-md">
                   <SelectItem value="current">Current</SelectItem>
                   <SelectItem value="savings">Savings</SelectItem>
-                  <SelectItem value="credit">Credit</SelectItem>
-                  <SelectItem value="investments">Investments</SelectItem>
                 </SelectContent>
               </Select>
               {errors.type && (
