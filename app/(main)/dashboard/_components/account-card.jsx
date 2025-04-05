@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -7,16 +9,56 @@ import {
 } from "@/components/ui/card";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
+import useFetch from "@/hooks/use-fetch";
+import { updateDefaultAccount } from "@/actions/accounts";
+import { toast } from "sonner";
 
 const AccountCard = ({ account }) => {
   const { name, type, balance, id, isDefault } = account;
+
+  const [isClient, setIsClient] = useState(false);
+
+  const {
+    loading: updateDefaultLoading,
+    fn: UpdateDefaultFn,
+    data: updateAccount,
+    error,
+  } = useFetch(updateDefaultAccount);
+
+  const handleDefaultChange = async (event) => {
+    event.preventDefault();
+
+    if (isDefault) {
+      toast.warning("You need at least 1 default account");
+      return; // Don't allow toggling off the default account
+    }
+
+    await UpdateDefaultFn(id);
+  };
+
+  useEffect(() => {
+    setIsClient(true); // Ensure this component is rendered on the client
+  }, []);
+
+  useEffect(() => {
+    if (updateAccount?.success) {
+      toast.success("Default account updated successfully");
+    }
+  }, [updateAccount, updateDefaultLoading]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to update default account");
+    }
+  }, [error]);
+
   return (
     <Card className="transition-transform transform hover:scale-105 hover:shadow-2xl rounded-xl border border-gray-300 bg-gradient-to-r from-blue-50 to-white shadow-sm">
       <Link
@@ -32,19 +74,23 @@ const AccountCard = ({ account }) => {
               {type}
             </span>
           </div>
-          <Tooltip>
-            <TooltipTrigger>
-              <Switch
-                checked={isDefault}
-                className="focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-sm">
-                {isDefault ? "Default Account" : "Set as Default"}
-              </p>
-            </TooltipContent>
-          </Tooltip>
+          {isClient && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Switch
+                  checked={isDefault}
+                  onClick={handleDefaultChange}
+                  disabled={updateDefaultLoading}
+                  className="focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-sm">
+                  {isDefault ? "Default Account" : "Set as Default"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </CardHeader>
         <CardContent className="mt-4 px-4">
           <div className="text-3xl font-extrabold text-gray-900">
