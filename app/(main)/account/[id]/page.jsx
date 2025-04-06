@@ -11,45 +11,55 @@ const AccountsPage = async ({ params }) => {
   const { transactions, ...account } = accountData;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-8">
       {/* Account Header */}
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800">{account.name}</h1>
-        <p className="text-gray-600 capitalize">{account.type} Account</p>
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg rounded-lg p-6">
+        <h1 className="text-3xl font-bold">{account.name}</h1>
+        <p className="text-lg mt-2 capitalize">{account.type} Account</p>
       </div>
 
       {/* Account Summary */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {[
           {
             label: "Current Balance",
             value: `$${parseFloat(account.balance).toFixed(2)}`,
             bgColor: "bg-green-100",
             textColor: "text-green-800",
+            icon: "💰",
           },
           {
             label: "Transactions",
             value: account._count.transactions,
             bgColor: "bg-blue-100",
             textColor: "text-blue-800",
+            icon: "📊",
           },
         ].map((item, index) => (
           <div
             key={index}
-            className={`${item.bgColor} ${item.textColor} p-4 rounded-lg shadow-md`}
+            className={`flex items-center gap-4 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ${item.bgColor} ${item.textColor}`}
           >
-            <div className="text-3xl font-semibold">{item.value}</div>
-            <p className="text-sm">{item.label}</p>
+            <div className="text-4xl">{item.icon}</div>
+            <div>
+              <div className="text-2xl font-semibold">{item.value}</div>
+              <p className="text-sm">{item.label}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Transaction Table */}
-      <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#4F46E5" />}
-      >
-        <TransactionTable transactions={transactions} />
-      </Suspense>
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Transactions</h2>
+        <Suspense
+          fallback={
+            <BarLoader className="mt-4" width={"100%"} color="#4F46E5" />
+          }
+        >
+          <TransactionTable transactions={transactions} />
+        </Suspense>
+      </div>
     </div>
   );
 };

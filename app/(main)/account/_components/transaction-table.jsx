@@ -8,7 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -96,27 +95,28 @@ const TransactionTable = ({ transactions }) => {
         if (typeFilter === "income") return transaction.type === "INCOME";
         return transaction.type === "EXPENSE";
       });
-
-      // Apply Sorting
-      result.sort((a, b) => {
-        let comparison = 0;
-
-        switch (sortConfig.field) {
-          case "date":
-            comparison = new Date(a.date) - new Date(b.date);
-            break;
-          case "amount":
-            comparison = a.amount - b.amount;
-            break;
-          case "category":
-            comparison = a.category.localeCompare(b.category);
-            break;
-          default:
-            comparison = 0;
-        }
-        return sortConfig.direction === "asc" ? comparison : -comparison;
-      });
     }
+
+    // Apply Sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortConfig.field) {
+        case "date":
+          comparison = new Date(a.date) - new Date(b.date);
+          break;
+        case "amount":
+          comparison = a.amount - b.amount;
+          break;
+        case "category":
+          comparison = a.category.localeCompare(b.category);
+          break;
+        default:
+          comparison = 0;
+      }
+      return sortConfig.direction === "asc" ? comparison : -comparison;
+    });
+
     return result;
   }, [transactions, searchTerm, typeFilter, recurringFilter, sortConfig]);
 
@@ -131,7 +131,7 @@ const TransactionTable = ({ transactions }) => {
   const handleSelect = (id) => {
     setSelectedIds((current) =>
       current.includes(id)
-        ? current.filter((item) => item != id)
+        ? current.filter((item) => item !== id)
         : [...current, id]
     );
   };
@@ -160,7 +160,7 @@ const TransactionTable = ({ transactions }) => {
   const handleBulkDelete = async () => {
     if (
       !window.confirm(
-        "Are you sure you want to delete ${selectedIds.length} transactions?"
+        `Are you sure you want to delete ${selectedIds.length} transactions?`
       )
     ) {
       return;
@@ -171,32 +171,38 @@ const TransactionTable = ({ transactions }) => {
 
   useEffect(() => {
     if (deleted && !deleteLoading) {
-      toast.error("Transactions deleted successfully");
+      toast.success("Transactions deleted successfully");
     }
   }, [deleted, deleteLoading]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {deleteLoading && (
         <BarLoader className="mt-4" width={"100%"} color="#4F46E5" />
       )}
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="realtive flex-1">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search Transactions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
+            className={`pl-10 ${
+              searchTerm ? "bg-black text-white" : "bg-white text-black"
+            } hover:bg-black hover:text-white focus:bg-black focus:text-white transition-colors`}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger>
+            <SelectTrigger
+              className={`w-[160px] ${
+                typeFilter ? "bg-black text-white" : "bg-white text-black"
+              } hover:bg-black hover:text-white focus:bg-black focus:text-white transition-colors`}
+            >
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-black text-white">
               <SelectItem value="income">Income</SelectItem>
               <SelectItem value="expense">Expense</SelectItem>
             </SelectContent>
@@ -206,26 +212,31 @@ const TransactionTable = ({ transactions }) => {
             value={recurringFilter}
             onValueChange={(value) => setRecurringFilter(value)}
           >
-            <SelectTrigger className="w-[155px]">
+            <SelectTrigger
+              className={`${
+                recurringFilter === "non-recurring" ? "w-[220px]" : "w-[160px]"
+              } ${
+                recurringFilter ? "bg-black text-white" : "bg-white text-black"
+              } hover:bg-black hover:text-white focus:bg-black focus:text-white transition-colors`}
+            >
               <SelectValue placeholder="All Transactions" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-black text-white">
               <SelectItem value="recurring">Recurring Only</SelectItem>
               <SelectItem value="non-recurring">Non-Recurring Only</SelectItem>
             </SelectContent>
           </Select>
 
           {selectedIds.length > 0 && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBulkDelete}
-              >
-                <Trash className="h-4 w-4 mr-2" />
-                Delete Selected ({selectedIds.length})
-              </Button>
-            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleBulkDelete}
+              className="flex items-center gap-2"
+            >
+              <Trash className="h-4 w-4" />
+              Delete Selected ({selectedIds.length})
+            </Button>
           )}
           {(searchTerm || typeFilter || recurringFilter) && (
             <Button
@@ -233,6 +244,7 @@ const TransactionTable = ({ transactions }) => {
               size="icon"
               onClick={handleClearFilters}
               title="Clear Filters"
+              className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white transition-colors"
             >
               <X className="h-4 w-5" />
             </Button>
@@ -240,11 +252,11 @@ const TransactionTable = ({ transactions }) => {
         </div>
       </div>
       {/* Transactions */}
-      <div className="rounded-md border">
+      <div className="rounded-md border shadow-sm">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50px]">
+            <TableRow className="bg-gray-50">
+              <TableHead className="w-[50px] text-center">
                 <Checkbox
                   onCheckedChange={handleSelectAll}
                   checked={
@@ -255,10 +267,10 @@ const TransactionTable = ({ transactions }) => {
                 />
               </TableHead>
               <TableHead
-                className="cursor-pointer"
+                className="cursor-pointer text-center"
                 onClick={() => handleSort("date")}
               >
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   Date
                   {sortConfig.field === "date" &&
                     (sortConfig.direction === "asc" ? (
@@ -268,12 +280,12 @@ const TransactionTable = ({ transactions }) => {
                     ))}
                 </div>
               </TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead className="text-center">Description</TableHead>
               <TableHead
-                className="cursor-pointer"
+                className="cursor-pointer text-center"
                 onClick={() => handleSort("category")}
               >
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   Category{" "}
                   {sortConfig.field === "category" &&
                     (sortConfig.direction === "asc" ? (
@@ -284,10 +296,10 @@ const TransactionTable = ({ transactions }) => {
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer"
+                className="cursor-pointer text-center"
                 onClick={() => handleSort("amount")}
               >
-                <div className="flex items-center justify-end">
+                <div className="flex items-center justify-center">
                   Amount{" "}
                   {sortConfig.field === "amount" &&
                     (sortConfig.direction === "asc" ? (
@@ -297,7 +309,7 @@ const TransactionTable = ({ transactions }) => {
                     ))}
                 </div>
               </TableHead>
-              <TableHead>Recurring</TableHead>
+              <TableHead className="text-center">Recurring</TableHead>
               <TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
@@ -313,18 +325,23 @@ const TransactionTable = ({ transactions }) => {
               </TableRow>
             ) : (
               filteredAndSortedTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell>
+                <TableRow
+                  key={transaction.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <TableCell className="text-center">
                     <Checkbox
                       onCheckedChange={() => handleSelect(transaction.id)}
                       checked={selectedIds.includes(transaction.id)}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     {format(new Date(transaction.date), "PP")}
                   </TableCell>
-                  <TableCell>{transaction.description}</TableCell>
-                  <TableCell className="capitalized">
+                  <TableCell className="text-center">
+                    {transaction.description}
+                  </TableCell>
+                  <TableCell className="text-center capitalize">
                     <span
                       style={{
                         background: categoryColors[transaction.category],
@@ -334,9 +351,8 @@ const TransactionTable = ({ transactions }) => {
                       {transaction.category}
                     </span>
                   </TableCell>
-                  <TableCell>Credit Card</TableCell>
                   <TableCell
-                    className="text-right font-medium"
+                    className="text-center font-medium"
                     style={{
                       color: transaction.type === "EXPENSE" ? "red" : "green",
                     }}
@@ -344,12 +360,11 @@ const TransactionTable = ({ transactions }) => {
                     {transaction.type === "EXPENSE" ? "-" : "+"}$
                     {transaction.amount.toFixed(2)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     {transaction.isRecurring ? (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            {" "}
                             <Badge
                               variant="outline"
                               className="gap-1 bg-purple-100 text-purple-800 hover:bg-purple-200"
