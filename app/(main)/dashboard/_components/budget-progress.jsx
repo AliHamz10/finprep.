@@ -138,22 +138,25 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
                   : "bg-green-500"
               }`}
             />
-            {isOverBudget ? (
-              <div className="flex items-center gap-2 text-red-700">
-                <AlertCircle className="h-5 w-5" />
-                <span>You have exceeded your budget!</span>
-              </div>
-            ) : percentUsed >= 75 ? (
-              <div className="flex items-center gap-2 text-yellow-600">
-                <Info className="h-5 w-5" />
-                <span>Warning: You are nearing your budget limit.</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-green-600">
-                <Info className="h-5 w-5" />
-                <span>Great! You are within your budget.</span>
-              </div>
-            )}
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{percentUsed.toFixed(1)}% of your budget used</span>
+              {isOverBudget ? (
+                <div className="flex items-center gap-2 text-red-700">
+                  <AlertCircle className="h-5 w-5" />
+                  <span>You have exceeded your budget!</span>
+                </div>
+              ) : percentUsed >= 75 ? (
+                <div className="flex items-center gap-2 text-yellow-600">
+                  <Info className="h-5 w-5" />
+                  <span>Warning: You are nearing your budget limit.</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-green-600">
+                  <Info className="h-5 w-5" />
+                  <span>Great! You are within your budget.</span>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </CardContent>
