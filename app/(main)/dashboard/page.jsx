@@ -4,13 +4,38 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import React from "react";
 import AccountCard from "./_components/account-card";
+import { getCurrentBudget } from "@/actions/budget";
+import BudgetProgress from "./_components/budget-progress";
 
 async function DashboardPage() {
-  const accounts = await getUserAccounts();
+  let accounts = [];
+  let budgetData = null;
+
+  try {
+    accounts = await getUserAccounts();
+  } catch (error) {
+    console.error("Error fetching user accounts:", error);
+  }
+
+  const defaultAccount = accounts?.find((account) => account.isDefault);
+
+  if (defaultAccount) {
+    try {
+      budgetData = await getCurrentBudget(defaultAccount.id);
+    } catch (error) {
+      console.error("Error fetching budget data:", error);
+    }
+  }
 
   return (
     <div className="px-5">
       {/* Budget Progress */}
+      {defaultAccount && (
+        <BudgetProgress
+          initialBudget={budgetData?.budget}
+          currentExpenses={budgetData?.currentExpenses || 0}
+        />
+      )}
 
       {/* Overview */}
 
@@ -26,10 +51,9 @@ async function DashboardPage() {
             </CardContent>
           </Card>
         </CreateAccountDrawer>
-        {accounts.length > 0 &&
-          accounts?.map((account) => {
-            return <AccountCard key={account.id} account={account} />;
-          })}
+        {accounts?.map((account) => (
+          <AccountCard key={account.id} account={account} />
+        ))}
       </div>
     </div>
   );
