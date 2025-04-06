@@ -43,8 +43,8 @@ export async function getCurrentBudget(accountId) {
         userId: user.id,
         type: "EXPENSE",
         date: {
-          gte: startOfMonth,
-          lte: endOfMonth,
+          gte: startOfMonth(currentDate), // Correctly call startOfMonth
+          lte: endOfMonth(currentDate), // Correctly call endOfMonth
         },
         accountId,
       },

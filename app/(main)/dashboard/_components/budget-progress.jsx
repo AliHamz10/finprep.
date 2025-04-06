@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import useFetch from "@/hooks/use-fetch";
 import { Check, Pencil, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -47,6 +48,9 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     if (updatedBudget?.success) {
       setIsEditing(false);
       toast.success("Budget updated successfully");
+
+      // Update the local state with the new budget amount
+      setNewBudget(updatedBudget.data.amount.toString());
     }
   }, [updatedBudget]);
 
@@ -76,25 +80,32 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
                   className="w-32"
                   placeholder="Enter amount"
                   autoFocus
+                  disabled={isLoading}
                 />
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleUpdateBudget}
+                  disabled={isLoading}
                 >
                   <Check className="h-4 w-4 text-green-500" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleCancel}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCancel}
+                  disabled={isLoading}
+                >
                   <X className="h-4 w-4 text-red-500" />
                 </Button>
               </div>
             ) : (
               <>
                 <CardDescription>
-                  {initialBudget
-                    ? `$${currentExpenses.toFixed(
-                        2
-                      )} of $${initialBudget.amount.toFixed(2)} spent`
+                  {initialBudget || updatedBudget?.data
+                    ? `$${(currentExpenses || 0).toFixed(2)} of $${(
+                        updatedBudget?.data?.amount || initialBudget.amount
+                      ).toFixed(2)} spent`
                     : "No Budget set"}
                 </CardDescription>
                 <Button
@@ -110,7 +121,20 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <p>Card Content</p>
+        {initialBudget && (
+          <div className="space-y-2">
+            <Progress
+              value={percentUsed}
+              extraStyles={`${
+                percentUsed >= 90
+                  ? "bg-red-500"
+                  : percentUsed >= 75
+                  ? "bg-yellow-500"
+                  : "bg-green-500"
+              }`}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
