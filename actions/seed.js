@@ -15,8 +15,6 @@ const CATEGORIES = {
     { name: "other-income", range: [100, 1000] },
   ],
   EXPENSE: [
-    { name: "housing", range: [1000, 2000] },
-    { name: "transportation", range: [100, 500] },
     { name: "groceries", range: [200, 600] },
     { name: "utilities", range: [100, 300] },
     { name: "entertainment", range: [50, 200] },
