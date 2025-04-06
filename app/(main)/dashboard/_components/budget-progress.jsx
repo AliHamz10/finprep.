@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import useFetch from "@/hooks/use-fetch";
-import { Check, Pencil, X } from "lucide-react";
+import { Check, Pencil, X, AlertCircle, Info } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -25,6 +25,8 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
   const percentUsed = initialBudget
     ? parseFloat(((currentExpenses / initialBudget.amount) * 100).toFixed(2))
     : 0;
+
+  const isOverBudget = percentUsed > 100;
 
   const {
     loading: isLoading,
@@ -112,6 +114,7 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsEditing(true)}
+                  disabled={isEditing}
                 >
                   <Pencil className="h-6 w-6" />
                 </Button>
@@ -126,13 +129,31 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
             <Progress
               value={percentUsed}
               extraStyles={`${
-                percentUsed >= 90
+                isOverBudget
+                  ? "bg-red-700"
+                  : percentUsed >= 90
                   ? "bg-red-500"
                   : percentUsed >= 75
                   ? "bg-yellow-500"
                   : "bg-green-500"
               }`}
             />
+            {isOverBudget ? (
+              <div className="flex items-center gap-2 text-red-700">
+                <AlertCircle className="h-5 w-5" />
+                <span>You have exceeded your budget!</span>
+              </div>
+            ) : percentUsed >= 75 ? (
+              <div className="flex items-center gap-2 text-yellow-600">
+                <Info className="h-5 w-5" />
+                <span>Warning: You are nearing your budget limit.</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-green-600">
+                <Info className="h-5 w-5" />
+                <span>Great! You are within your budget.</span>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

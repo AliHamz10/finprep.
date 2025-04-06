@@ -6,6 +6,9 @@ import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { cn } from "@/lib/utils";
 
 function Progress({ className, value, extraStyles, ...props }) {
+  // Ensure value is not negative and handle edge cases
+  const cappedValue = Math.max(0, value || 0);
+
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -17,8 +20,12 @@ function Progress({ className, value, extraStyles, ...props }) {
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className={`h-full w-full flex-1 bg-primary transition-all ${extraStyles}`}
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        className={`h-full transition-all ${
+          cappedValue > 100 ? "bg-red-700" : "bg-primary"
+        } ${extraStyles}`}
+        style={{
+          width: `${Math.min(cappedValue, 100)}%`, // Cap width at 100%
+        }}
       />
     </ProgressPrimitive.Root>
   );
