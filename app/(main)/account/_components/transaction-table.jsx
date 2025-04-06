@@ -271,7 +271,7 @@ const TransactionTable = ({ transactions }) => {
       <div className="rounded-md border shadow-sm">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
+            <TableRow className="bg-gray-100 border-b">
               <TableHead className="w-[50px] text-center">
                 <Checkbox
                   onCheckedChange={handleSelectAll}
@@ -283,7 +283,7 @@ const TransactionTable = ({ transactions }) => {
                 />
               </TableHead>
               <TableHead
-                className="cursor-pointer text-center"
+                className="cursor-pointer text-center text-sm font-semibold text-gray-700"
                 onClick={() => handleSort("date")}
               >
                 <div className="flex items-center justify-center">
@@ -296,9 +296,11 @@ const TransactionTable = ({ transactions }) => {
                     ))}
                 </div>
               </TableHead>
-              <TableHead className="text-center">Description</TableHead>
+              <TableHead className="text-center text-sm font-semibold text-gray-700">
+                Description
+              </TableHead>
               <TableHead
-                className="cursor-pointer text-center"
+                className="cursor-pointer text-center text-sm font-semibold text-gray-700"
                 onClick={() => handleSort("category")}
               >
                 <div className="flex items-center justify-center">
@@ -312,7 +314,7 @@ const TransactionTable = ({ transactions }) => {
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer text-center"
+                className="cursor-pointer text-center text-sm font-semibold text-gray-700"
                 onClick={() => handleSort("amount")}
               >
                 <div className="flex items-center justify-center">
@@ -325,7 +327,9 @@ const TransactionTable = ({ transactions }) => {
                     ))}
                 </div>
               </TableHead>
-              <TableHead className="text-center">Recurring</TableHead>
+              <TableHead className="text-center text-sm font-semibold text-gray-700">
+                Recurring
+              </TableHead>
               <TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
@@ -334,7 +338,7 @@ const TransactionTable = ({ transactions }) => {
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="text-center text-muted-foreground"
+                  className="text-center text-muted-foreground text-sm"
                 >
                   No Transactions Found
                 </TableCell>
@@ -351,10 +355,10 @@ const TransactionTable = ({ transactions }) => {
                       checked={selectedIds.includes(transaction.id)}
                     />
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center text-sm font-medium text-gray-800">
                     {format(new Date(transaction.date), "PP")}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center text-sm font-medium text-gray-800">
                     {transaction.description}
                   </TableCell>
                   <TableCell className="text-center capitalize">
@@ -368,7 +372,7 @@ const TransactionTable = ({ transactions }) => {
                     </span>
                   </TableCell>
                   <TableCell
-                    className="text-center font-medium"
+                    className="text-center font-medium text-sm"
                     style={{
                       color: transaction.type === "EXPENSE" ? "red" : "green",
                     }}
@@ -453,10 +457,11 @@ const TransactionTable = ({ transactions }) => {
             variant="outline"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
           >
             Previous
           </Button>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm font-medium text-gray-600">
             Page {currentPage} of {totalPages}
           </span>
           <Button
@@ -465,6 +470,7 @@ const TransactionTable = ({ transactions }) => {
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
+            className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
           >
             Next
           </Button>
