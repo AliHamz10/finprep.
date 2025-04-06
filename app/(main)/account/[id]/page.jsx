@@ -48,6 +48,7 @@ const AccountsPage = async ({ params }) => {
           </div>
         ))}
       </div>
+      {/* Chart Section */}
 
       {/* Transaction Table */}
       <div className="bg-white shadow-md rounded-lg p-6">

@@ -70,6 +70,10 @@ const TransactionTable = ({ transactions }) => {
   const [typeFilter, setTypeFilter] = useState("");
   const [recurringFilter, setRecurringFilter] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 25;
+
   const filteredAndSortedTransactions = useMemo(() => {
     let result = [...transactions];
 
@@ -120,6 +124,17 @@ const TransactionTable = ({ transactions }) => {
     return result;
   }, [transactions, searchTerm, typeFilter, recurringFilter, sortConfig]);
 
+  // Paginated transactions
+  const paginatedTransactions = useMemo(() => {
+    const startIndex = (currentPage - 1) * transactionsPerPage;
+    const endIndex = startIndex + transactionsPerPage;
+    return filteredAndSortedTransactions.slice(startIndex, endIndex);
+  }, [filteredAndSortedTransactions, currentPage]);
+
+  const totalPages = Math.ceil(
+    filteredAndSortedTransactions.length / transactionsPerPage
+  );
+
   const handleSort = (field) => {
     setSortConfig((current) => ({
       field,
@@ -138,9 +153,9 @@ const TransactionTable = ({ transactions }) => {
 
   const handleSelectAll = () => {
     setSelectedIds((current) =>
-      current.length === filteredAndSortedTransactions.length
+      current.length === paginatedTransactions.length
         ? []
-        : filteredAndSortedTransactions.map((t) => t.id)
+        : paginatedTransactions.map((t) => t.id)
     );
   };
 
@@ -149,6 +164,7 @@ const TransactionTable = ({ transactions }) => {
     setTypeFilter("");
     setRecurringFilter("");
     setSelectedIds([]);
+    setCurrentPage(1); // Reset to the first page
   };
 
   const {
@@ -314,7 +330,7 @@ const TransactionTable = ({ transactions }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedTransactions.length === 0 ? (
+            {paginatedTransactions.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={7}
@@ -324,7 +340,7 @@ const TransactionTable = ({ transactions }) => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredAndSortedTransactions.map((transaction) => (
+              paginatedTransactions.map((transaction) => (
                 <TableRow
                   key={transaction.id}
                   className="hover:bg-gray-50 transition-colors"
@@ -430,6 +446,30 @@ const TransactionTable = ({ transactions }) => {
           </TableBody>
         </Table>
       </div>
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-4">
+          <Button
+            variant="outline"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            disabled={currentPage === totalPages}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
