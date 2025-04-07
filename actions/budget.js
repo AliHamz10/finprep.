@@ -2,18 +2,15 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { endOfMonth, startOfMonth } from "date-fns";
 import { revalidatePath } from "next/cache";
 
 export async function getCurrentBudget(accountId) {
   try {
     const { userId } = await auth();
-    if (!userId) throw new Error("User not authorized");
+    if (!userId) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
+      where: { clerkUserId: userId },
     });
 
     if (!user) {
@@ -26,13 +23,14 @@ export async function getCurrentBudget(accountId) {
       },
     });
 
+    // Get current month's expenses
     const currentDate = new Date();
-    const startDate = new Date(
+    const startOfMonth = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       1
     );
-    const endDate = new Date(
+    const endOfMonth = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth() + 1,
       0
@@ -43,8 +41,8 @@ export async function getCurrentBudget(accountId) {
         userId: user.id,
         type: "EXPENSE",
         date: {
-          gte: startOfMonth(currentDate), // Correctly call startOfMonth
-          lte: endOfMonth(currentDate), // Correctly call endOfMonth
+          gte: startOfMonth,
+          lte: endOfMonth,
         },
         accountId,
       },
@@ -68,18 +66,15 @@ export async function getCurrentBudget(accountId) {
 export async function updateBudget(amount) {
   try {
     const { userId } = await auth();
-    if (!userId) throw new Error("User not auhtorized");
+    if (!userId) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
+      where: { clerkUserId: userId },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+    if (!user) throw new Error("User not found");
 
+    // Update or create budget
     const budget = await db.budget.upsert({
       where: {
         userId: user.id,
@@ -100,9 +95,6 @@ export async function updateBudget(amount) {
     };
   } catch (error) {
     console.error("Error updating budget:", error);
-    return {
-      success: false,
-      error: error.message,
-    };
+    return { success: false, error: error.message };
   }
 }
