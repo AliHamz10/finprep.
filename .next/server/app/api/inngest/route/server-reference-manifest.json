@@ -1,0 +1,16 @@
+{
+  "node": {
+    "40fc3b54e19182c4d6adad558ebb0acbcf17b50303": {
+      "workers": {
+        "app/api/inngest/route": {
+          "moduleId": "[project]/.next-internal/server/app/api/inngest/route/actions.js { ACTIONS_MODULE0 => \"[project]/actions/send-email.js [app-route] (ecmascript)\" } [app-rsc] (ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/api/inngest/route": "rsc"
+      }
+    }
+  },
+  "edge": {}
+}
