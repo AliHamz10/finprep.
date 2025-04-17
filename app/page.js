@@ -17,14 +17,14 @@ const LandingPage = () => {
       {/* Hero Section */}
       <HeroSection>
         <h1 className="text-5xl md:text-8xl lg:text-[105px] pb-6 gradient-title">
-          Manage Only
+          Manage Your Finances <br /> with Intelligence
         </h1>
       </HeroSection>
 
       {/* Stats Section */}
       <section className="py-20 bg-blue-100">
         <div className="container mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 animate-fade-in">
             {statsData.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-5xl font-extrabold text-blue-700 mb-2">
@@ -46,11 +46,13 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {featuresData.map((feature, index) => (
               <Card
-                className="p-6 shadow-lg hover:shadow-xl transition-shadow"
+                className="p-6 shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105"
                 key={index}
               >
                 <CardContent className="space-y-4 pt-4">
-                  <div className="text-blue-600">{feature.icon}</div>
+                  <div className="text-blue-600 animate-bounce">
+                    {feature.icon}
+                  </div>
                   <h3 className="text-2xl font-semibold text-gray-800">
                     {feature.title}
                   </h3>
@@ -72,9 +74,9 @@ const LandingPage = () => {
             {howItWorksData.map((step, index) => (
               <div
                 key={index}
-                className="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                className="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow transform hover:scale-105"
               >
-                <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
                   {step.icon}
                 </div>
                 <h3 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -97,7 +99,7 @@ const LandingPage = () => {
             {testimonialsData.map((testimonial, index) => (
               <Card
                 key={index}
-                className="p-6 shadow-lg hover:shadow-xl transition-shadow"
+                className="p-6 shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105"
               >
                 <CardContent className="pt-4">
                   <div className="flex items-center mb-4">
@@ -135,14 +137,25 @@ const LandingPage = () => {
             Join thousands of users who are already managing their finances
             smarter with Welth.
           </p>
-          <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="bg-white text-blue-700 hover:bg-blue-100 transition-colors"
-            >
-              Start Free Trial
-            </Button>
-          </Link>
+          <div className="flex justify-center space-x-4">
+            <Link href="/dashboard">
+              <Button
+                size="lg"
+                className="bg-white text-blue-700 hover:bg-blue-100 transition-colors"
+              >
+                Start Free Trial
+              </Button>
+            </Link>
+            <Link href="/learn-more">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-white border-white hover:bg-blue-600"
+              >
+                Learn More
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
