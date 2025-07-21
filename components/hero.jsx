@@ -1,30 +1,39 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const HeroSection = () => {
   const imageRef = useRef(null);
+  const ticking = useRef(false);
+
+  // Throttled scroll handler for better performance
+  const handleScroll = useCallback(() => {
+    if (!ticking.current) {
+      requestAnimationFrame(() => {
+        const imageElement = imageRef.current;
+        if (imageElement) {
+          const scrollPosition = window.scrollY;
+          const scrollThreshold = 100;
+
+          if (scrollPosition > scrollThreshold) {
+            imageElement.classList.add("scrolled");
+          } else {
+            imageElement.classList.remove("scrolled");
+          }
+        }
+        ticking.current = false;
+      });
+      ticking.current = true;
+    }
+  }, []);
 
   useEffect(() => {
-    const imageElement = imageRef.current;
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const scrollThreshold = 100;
-
-      if (scrollPosition > scrollThreshold) {
-        imageElement.classList.add("scrolled");
-      } else {
-        imageElement.classList.remove("scrolled");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   return (
     <section className="pt-20 pb-20 px-4 bg-white">
@@ -34,7 +43,7 @@ const HeroSection = () => {
             Control of Your Finances.
           </h1>
           <p className="text-lg text-gray-700 mb-6">
-            I’m an author, YouTuber, and Notion expert. I create in-depth{" "}
+            I'm an author, YouTuber, and Notion expert. I create in-depth{" "}
             <span className="font-semibold">tutorials</span> and{" "}
             <span className="font-semibold">templates</span> for Notion that
             help people be more productive and organized.
@@ -71,6 +80,7 @@ const HeroSection = () => {
               alt="Dashboard Preview"
               className="rounded-lg"
               priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </div>
