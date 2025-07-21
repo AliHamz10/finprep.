@@ -1,9 +1,14 @@
 import { Suspense } from "react";
 import { getAccountWithTransactions } from "@/actions/account";
-import { BarLoader } from "react-spinners";
+import dynamic from "next/dynamic";
 import { TransactionTable } from "../_components/transaction-table";
 import { notFound } from "next/navigation";
 import { AccountChart } from "../_components/account-chart";
+
+// Dynamic import for BarLoader to reduce initial bundle
+const BarLoader = dynamic(() => import("react-spinners/BarLoader"), {
+  ssr: false,
+});
 
 export default async function AccountPage({ params }) {
   const accountData = await getAccountWithTransactions(params.id);

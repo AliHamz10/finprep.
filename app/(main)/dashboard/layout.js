@@ -1,6 +1,11 @@
 import DashboardPage from "./page";
-import { BarLoader } from "react-spinners";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
+// Dynamic import for BarLoader
+const BarLoader = dynamic(() => import("react-spinners/BarLoader"), {
+  ssr: false,
+});
 
 export default function Layout() {
   return (

@@ -1,15 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
-import { format } from "date-fns";
+import dynamic from 'next/dynamic';
+import { format } from "date-fns/format";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 import {
@@ -21,6 +14,32 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
+// Dynamic import for recharts pie chart components
+const PieChart = dynamic(() => import('recharts').then(mod => ({ default: mod.PieChart })), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded animate-pulse" />
+});
+
+const Pie = dynamic(() => import('recharts').then(mod => ({ default: mod.Pie })), {
+  ssr: false,
+});
+
+const Cell = dynamic(() => import('recharts').then(mod => ({ default: mod.Cell })), {
+  ssr: false,
+});
+
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })), {
+  ssr: false,
+});
+
+const Tooltip = dynamic(() => import('recharts').then(mod => ({ default: mod.Tooltip })), {
+  ssr: false,
+});
+
+const Legend = dynamic(() => import('recharts').then(mod => ({ default: mod.Legend })), {
+  ssr: false,
+});
 
 const COLORS = [
   "#FF6B6B",

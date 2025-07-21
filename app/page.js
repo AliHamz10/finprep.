@@ -1,21 +1,28 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   featuresData,
   howItWorksData,
   statsData,
-  testimonialsData,
 } from "@/data/landing";
 import HeroSection from "@/components/hero";
 import Link from "next/link";
+
+// Lazy load the testimonials section to improve initial load time
+const TestimonialsSection = dynamic(() => import("@/components/testimonials-section"), {
+  loading: () => <div className="py-20 bg-white w-full h-96 bg-gray-100 animate-pulse" />,
+  ssr: true,
+});
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-black">
       {/* Hero Section */}
       <HeroSection />
+      
       {/* Stats Section */}
       <section className="py-20 bg-gray-100 w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 px-6 md:px-12">
@@ -29,6 +36,7 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
+      
       {/* Features Section */}
       <section id="features" className="py-20 bg-white w-full">
         <h2 className="text-4xl font-extrabold text-center text-black mb-12">
@@ -51,6 +59,7 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
+      
       {/* How It Works Section */}
       <section className="py-20 bg-gray-50 w-full">
         <h2 className="text-4xl font-extrabold text-center text-black mb-16">
@@ -73,41 +82,11 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
-      {/* Testimonials Section */}
-      <section className="py-20 bg-white w-full">
-        <h2 className="text-4xl font-extrabold text-center text-black mb-16">
-          What Our Users Say
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-6 md:px-12">
-          {testimonialsData.map((testimonial, index) => (
-            <Card
-              key={index}
-              className="p-6 shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 bg-gray-50 rounded-lg"
-            >
-              <CardContent className="pt-4">
-                <div className="flex items-center mb-4">
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
-                  <div className="ml-4">
-                    <div className="font-semibold text-black">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {testimonial.role}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-600 italic">"{testimonial.quote}"</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+
+      {/* Testimonials Section - Lazy Loaded */}
+      <Suspense fallback={<div className="py-20 bg-white w-full h-96 bg-gray-100 animate-pulse" />}>
+        <TestimonialsSection />
+      </Suspense>
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-100 w-full text-center">

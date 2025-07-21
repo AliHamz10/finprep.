@@ -11,7 +11,7 @@ import {
   RefreshCw,
   Clock,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import { toast } from "sonner";
 
 import {
@@ -50,7 +50,12 @@ import { cn } from "@/lib/utils";
 import { categoryColors } from "@/data/categories";
 import { bulkDeleteTransactions } from "@/actions/account";
 import useFetch from "@/hooks/use-fetch";
-import { BarLoader } from "react-spinners";
+import dynamic from "next/dynamic";
+
+// Dynamic import for BarLoader
+const BarLoader = dynamic(() => import("react-spinners/BarLoader"), {
+  ssr: false,
+});
 import { useRouter } from "next/navigation";
 
 const RECURRING_INTERVALS = {

@@ -1,17 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { format, subDays, startOfDay, endOfDay } from "date-fns";
+import dynamic from 'next/dynamic';
+import { format } from "date-fns/format";
+import { subDays } from "date-fns/subDays";
+import { startOfDay } from "date-fns/startOfDay";
+import { endOfDay } from "date-fns/endOfDay";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -20,6 +14,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+// Dynamic import for recharts to reduce initial bundle size
+const BarChart = dynamic(() => import('recharts').then(mod => ({ default: mod.BarChart })), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded animate-pulse" />
+});
+
+const Bar = dynamic(() => import('recharts').then(mod => ({ default: mod.Bar })), {
+  ssr: false,
+});
+
+const XAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.XAxis })), {
+  ssr: false,
+});
+
+const YAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.YAxis })), {
+  ssr: false,
+});
+
+const CartesianGrid = dynamic(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })), {
+  ssr: false,
+});
+
+const Tooltip = dynamic(() => import('recharts').then(mod => ({ default: mod.Tooltip })), {
+  ssr: false,
+});
+
+const Legend = dynamic(() => import('recharts').then(mod => ({ default: mod.Legend })), {
+  ssr: false,
+});
+
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })), {
+  ssr: false,
+});
 
 const DATE_RANGES = {
   "7D": { label: "Last 7 Days", days: 7 },
